@@ -1,0 +1,47 @@
+{
+  "name": "vscode-pi-bridge",
+  "displayName": "Pi Bridge",
+  "description": "Send an exact editor reference to an explicitly paired running Pi conversation.",
+  "version": "0.1.0",
+  "publisher": "local-pi",
+  "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SebastianKapunkt/vscode-pi-bridge.git"
+  },
+  "engines": { "vscode": "^1.96.0", "node": ">=22" },
+  "categories": ["Other"],
+  "extensionKind": ["ui"],
+  "main": "./dist/vscode.cjs",
+  "activationEvents": ["onStartupFinished"],
+  "capabilities": { "virtualWorkspaces": false, "untrustedWorkspaces": { "supported": false } },
+  "contributes": {
+    "commands": [
+      { "command": "piBridge.ask", "title": "Ask Pi…" },
+      { "command": "piBridge.select", "title": "Select Pi session…" },
+      { "command": "piBridge.recover", "title": "Pi: Recover request…" }
+    ],
+    "menus": { "editor/context": [{ "command": "piBridge.ask", "when": "resourceScheme == file", "group": "navigation@99" }] },
+    "keybindings": [{ "command": "piBridge.ask", "key": "ctrl+alt+shift+p", "mac": "cmd+alt+shift+p", "when": "editorTextFocus && resourceScheme == file" }]
+  },
+  "pi": { "extensions": ["./dist/pi.cjs"] },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "build": "node build.mjs",
+    "test": "npm run check && npm run build && esbuild checks/*.test.ts --bundle --platform=node --target=node22 --format=cjs --outdir=dist/checks && node --test dist/checks/*.test.js",
+    "vscode:prepublish": "npm run check && npm run build",
+    "package": "vsce package --no-dependencies -o dist/"
+  },
+  "peerDependencies": { "@earendil-works/pi-coding-agent": "1.5.2" },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "1.5.2",
+    "@types/node": "^22.0.0",
+    "@types/vscode": "1.96.0",
+    "@types/ws": "^8.5.0",
+    "@vscode/vsce": "^4.1.1",
+    "esbuild": "^0.28.2",
+    "typescript": "^5.9.0",
+    "ws": "^8.18.0"
+  }
+}
